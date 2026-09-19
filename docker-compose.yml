@@ -1,0 +1,21 @@
+services:
+  ucms:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ucms:latest
+    container_name: ucms_application
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - NODE_ENV=production
+      - JWT_SECRET=ucms_production_docker_secret_key_2026
+    volumes:
+      # Persist SQLite database and file uploads on host or docker volume
+      - ucms_storage:/app/server/uploads
+    restart: unless-stopped
+
+volumes:
+  ucms_storage:
+    driver: local

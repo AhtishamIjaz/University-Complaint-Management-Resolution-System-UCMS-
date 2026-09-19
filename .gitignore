@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Production build outputs
+dist/
+client/dist/
+
+# Uploaded complaint files (keep uploads folder clean in git)
+server/uploads/*
+!server/uploads/.gitkeep
+
+# Local SQLite Database (auto-generated & seeded on startup)
+server/ucms.db
+*.db-journal
+
+# Environment & Logs
+.env
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# System Files
+.DS_Store
+Thumbs.db

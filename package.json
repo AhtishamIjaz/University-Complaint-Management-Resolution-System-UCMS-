@@ -1,0 +1,14 @@
+{
+  "name": "ucms-university-complaint-management-system",
+  "version": "1.0.0",
+  "description": "University Complaint Management & Resolution System (UCMS) - FYP",
+  "scripts": {
+    "server": "npm --prefix server start",
+    "client": "npm --prefix client dev",
+    "seed": "npm --prefix server run seed",
+    "start": "node run.js"
+  },
+  "keywords": ["ucms", "fyp", "complaint-system", "university"],
+  "author": "",
+  "license": "ISC"
+}
