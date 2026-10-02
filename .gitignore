@@ -21,6 +21,8 @@ server/ucms.db
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+__pycache__/
+*.pyc
 
 # System Files
 .DS_Store
