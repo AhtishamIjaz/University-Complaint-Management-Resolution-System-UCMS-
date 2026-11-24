@@ -128,26 +128,33 @@ const reassignComplaint = async (req, res) => {
     const oldDept = await get(`SELECT name FROM departments WHERE id = ?`, [complaint.department_id]);
     const newDept = department_id ? await get(`SELECT name FROM departments WHERE id = ?`, [department_id]) : oldDept;
 
+    // Automatically transition to IN_PROGRESS upon administrative rerouting/reassignment
+    const newStatus = 'IN_PROGRESS';
+
     await run(
       `UPDATE complaints
        SET department_id = COALESCE(?, department_id),
            assigned_staff_id = ?,
+           status = ?,
            updated_at = datetime('now')
        WHERE id = ?`,
-      [department_id || null, assigned_staff_id || null, id]
+      [department_id || null, assigned_staff_id || null, newStatus, id]
     );
 
     await logAction({
       complaintId: id,
       action: 'ADMIN_REASSIGNED',
       performedByUserId: req.user.id,
-      oldValue: oldDept ? oldDept.name : 'Unknown',
-      newValue: newDept ? newDept.name : 'Unknown',
-      details: reason ? `Admin rerouted complaint. Reason: ${reason}` : `Admin rerouted complaint to ${newDept ? newDept.name : 'new department'}.`
+      oldValue: `${oldDept ? oldDept.name : 'Unknown'} (${complaint.status})`,
+      newValue: `${newDept ? newDept.name : 'Unknown'} (${newStatus})`,
+      details: reason 
+        ? `Admin rerouted complaint to ${newDept ? newDept.name : 'new department'} and automatically updated status to ${newStatus}. Reason: ${reason}` 
+        : `Admin rerouted complaint to ${newDept ? newDept.name : 'new department'} and automatically updated status to ${newStatus}.`
     });
 
     res.json({
-      message: 'Complaint successfully reassigned.',
+      message: 'Complaint successfully reassigned and set to IN_PROGRESS.',
+      status: newStatus,
       department_name: newDept ? newDept.name : undefined
     });
   } catch (err) {
